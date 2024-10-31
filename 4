@@ -1,3 +1,37 @@
+-- Dungeon data with exact level requirements
+local dungeons = {
+    { name = "Desert Temple", levels = {1, 5, 15}, difficulties = {"Easy", "Medium", "Hard"} },
+    { name = "Winter Outpost", levels = {30, 40, 50}, difficulties = {"Easy", "Medium", "Hard"} },
+    { name = "Pirate Island", levels = {60, 65}, difficulties = {"Insane", "Nightmare"} },
+    { name = "King's Castle", levels = {70, 75}, difficulties = {"Insane", "Nightmare"} },
+    { name = "The Underworld", levels = {80, 85}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Samurai Palace", levels = {90, 95}, difficulties = {"Insane", "Nightmare"} },
+    { name = "The Canals", levels = {100, 105}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Ghastly Harbor", levels = {110, 115}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Steampunk Sewers", levels = {120, 125}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Orbital Outpost", levels = {135, 140}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Volcanic Chamber", levels = {150, 155}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Aquatic Temple", levels = {160, 165}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Enchanted Forest", levels = {170, 175}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Northern Lands", levels = {180, 185}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Gilded Skies", levels = {190, 195}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Yokai Peak", levels = {200, 205}, difficulties = {"Insane", "Nightmare"} },
+    { name = "Abyssal Void", levels = {210, 221}, difficulties = {"Insane", "Nightmare"} } 
+}
+
+-- Function to find the recommended dungeon based on player level
+local function getRecommendedDungeon(level)
+    local recommendedDungeon = nil
+    for i, dungeon in ipairs(dungeons) do
+        for j, reqLevel in ipairs(dungeon.levels) do
+            if level >= reqLevel then
+                recommendedDungeon = { name = dungeon.name, difficulty = dungeon.difficulties[j] }
+            end
+        end
+    end
+    return recommendedDungeon
+end
+
 -- Define the AutoMakeDungeon function
 function getgenv().AutoMakeDungeon()
     local player = game:GetService("Players").LocalPlayer
@@ -28,11 +62,14 @@ function getgenv().AutoMakeDungeon()
     end
 
     -- Determine the recommended dungeon
-    local dungeonName, difficulty = getRecommendedDungeon(playerLevel)
-    if not dungeonName or not difficulty then
+    local dungeonInfo = getRecommendedDungeon(playerLevel)
+    if not dungeonInfo then
         print("No suitable dungeon found for your level.")
         return
     end
+
+    local dungeonName = dungeonInfo.name
+    local difficulty = dungeonInfo.difficulty
 
     -- Execute the dungeon creation and start process
     print("Recommended Dungeon: " .. dungeonName .. " (" .. difficulty .. ")")
@@ -128,9 +165,9 @@ if getgenv().AutoMenu then
 
     -- Check if the loadstring was successful
     if not success then
-        print("What Happened Bru")
+        print("Error loading script: ", err)
     else
-        print("What Happened Bru")
+        print("Script loaded successfully.")
     end
 else
     print("Macro Successfully Saved and Loaded")
@@ -144,9 +181,7 @@ end
 
 -- Independent SolaraVersion check for script loading
 if getgenv().SolaraVersion then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/wset3/test3/refs/heads/main/3"))()
-    print("Macro Successfully Saved and Loaded")
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/hen56s2/Holder/refs/heads/main/Pop"))()
 else
     loadstring(game:HttpGet("https://raw.githubusercontent.com/hen56s2/221/refs/heads/main/Pop"))()
-    print("Macro Successfully Saved and Loaded")
 end
